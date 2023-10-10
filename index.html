@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tarkett - PoC - Search component</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background: #005344;
+        padding: 0 20px;
+      }
+
+      ::selection {
+        color: #fff;
+        background: #005344;
+      }
+
+      .container {
+        max-width: 450px;
+        margin: 150px auto;
+      }
+
+      .search {
+        background: #fff;
+        width: 100%;
+        border-radius: 5px;
+        position: relative;
+        box-shadow: 0px 1px 5px 3px rgba(0, 0, 0, 0.12);
+      }
+
+      .search__input {
+        height: 45px;
+        width: 100%;
+        outline: none;
+        border: none;
+        border-radius: 5px;
+        padding: 0 20px;
+        font-size: 18px;
+      }
+
+      .search.active .search__input {
+        border-radius: 5px 5px 0 0;
+      }
+
+      .search__input-holder {
+        align-items: center;
+        box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
+        display: grid;
+        grid-template-columns: 1fr 40px;
+      }
+
+      .search__link {
+        height: 35px;
+        width: 35px;
+        text-align: center;
+        line-height: 35px;
+        font-size: 20px;
+        color: #005344;
+        fill: #005344;
+        cursor: pointer;
+        background: none;
+      }
+
+      .search__results {
+        padding: 0;
+        opacity: 0;
+        pointer-events: none;
+        max-height: 280px;
+        overflow-y: auto;
+      }
+
+      .search--active .search__results {
+        padding: 10px 8px;
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .search__results-item {
+        list-style: none;
+        padding: 8px 12px;
+        display: none;
+        width: 100%;
+        cursor: default;
+        border-radius: 3px;
+      }
+
+      .search__results-item:hover {
+        background: #efefef;
+      }
+
+      .search--active .search__results-item {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <form class="search">
+        <div class="search__input-holder">
+          <label for="search" hidden>Search</label>
+          <input
+            id="search"
+            class="search__input"
+            type="text"
+            placeholder="Search..."
+          />
+          <a target="_blank" href="blank" class="search__link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path
+                fill="inherit"
+                fill-rule="evenodd"
+                d="M4.475 4.475a5.5 5.5 0 1 0 7.778 7.778 5.5 5.5 0 0 0-7.778-7.778Zm6.364 6.364a3.5 3.5 0 1 1-4.95-4.95 3.5 3.5 0 0 1 4.95 4.95Z"
+                clip-rule="evenodd"
+              />
+              <path
+                fill="inherit"
+                d="M11.192 13.314a1.5 1.5 0 1 1 2.122-2.122l3.535 3.536a1.5 1.5 0 1 1-2.121 2.121l-3.536-3.535Z"
+              />
+            </svg>
+          </a>
+        </div>
+        <div class="search__results"></div>
+      </form>
+    </div>
+    <script>
+      let suggestions = [
+        "Channel",
+        "CodingLab",
+        "CodingNepal",
+        "YouTube",
+        "YouTuber",
+        "YouTube Channel",
+        "Blogger",
+        "Bollywood",
+        "Vlogger",
+        "Vechiles",
+        "Facebook",
+        "Freelancer",
+        "Facebook Page",
+        "Designer",
+        "Developer",
+        "Web Designer",
+        "Web Developer",
+        "Login Form in HTML & CSS",
+        "How to learn HTML & CSS",
+        "How to learn JavaScript",
+        "How to became Freelancer",
+        "How to became Web Designer",
+        "How to start Gaming Channel",
+        "How to start YouTube Channel",
+        "What does HTML stands for?",
+        "What does CSS stands for?",
+      ];
+
+      const search = document.querySelector(".search");
+      const inputBox = search.querySelector(".search__input");
+      const results = search.querySelector(".search__results");
+      const searchIcon = search.querySelector(".search__link");
+      let submitBtn = search.querySelector(".search__link");
+
+      inputBox.addEventListener("keyup", (e) => {
+        let userData = e.target.value;
+        let emptyArray = [];
+        if (userData) {
+          emptyArray = suggestions.filter((data) => {
+            return data
+              .toLocaleLowerCase()
+              .startsWith(userData.toLocaleLowerCase());
+          });
+          emptyArray = emptyArray.map((data) => {
+            return (data =
+              "<li class='search__results-item'>" + data + "</li>");
+          });
+          search.classList.add("search--active");
+          showSuggestions(emptyArray);
+          let allList = results.querySelectorAll("li");
+          for (let i = 0; i < allList.length; i++) {
+            allList[i].addEventListener("click", (e) => select(e.target));
+          }
+        } else {
+          search.classList.remove("search--active");
+        }
+      });
+
+      const select = (element) => {
+        let webLink = "";
+        let selectData = element.textContent;
+
+        inputBox.value = selectData;
+        searchIcon.addEventListener("click", () => {
+          webLink = `https://www.google.com/search?q=${selectData}`;
+          submitBtn.setAttribute("href", webLink);
+        });
+        search.classList.remove("search--active");
+      };
+
+      const showSuggestions = (list) => {
+        let listData;
+        if (!list.length) {
+          userValue = inputBox.value;
+          listData = "<li class='search__results-item'>" + userValue + "</li>";
+        } else {
+          listData = list.join("");
+        }
+        results.innerHTML = listData;
+      };
+    </script>
+  </body>
+</html>
