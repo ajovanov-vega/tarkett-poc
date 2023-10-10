@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputBox = search.querySelector(".search__input");
   const recent = search.querySelector(".search__recent");
   const recentListBox = search.querySelector(".search__recent-list");
+  const recentListItem = search.querySelector(".search__recent-item");
   const results = search.querySelector(".search__results");
   const submitBtn = search.querySelector(".search__submit");
   const searchResetBtn = search.querySelector(".search__reset");
@@ -71,6 +72,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (recentItems.length) {
       recent.style.display = "block";
       recentListBox.innerHTML = recentListItems;
+      const clickableRecentItems = recentListBox.querySelectorAll(
+        ".search__recent-item"
+      );
+      clickableRecentItems.forEach((item) => {
+        item.addEventListener("click", (e) => {
+          select(e.target);
+        });
+      });
     } else {
       recent.style.display = "none";
     }
