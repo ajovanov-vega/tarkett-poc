@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const results = search.querySelector(".search__results");
   const submitBtn = search.querySelector(".search__submit");
   const searchResetBtn = search.querySelector(".search__reset");
-  let recentList = [];
+  let recentList = JSON.parse(localStorage.getItem("search")) || [];;
 
   // Function to show suggestions
   const showSuggestions = (list) => {
@@ -54,21 +54,22 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to select a suggestion
   const select = (element) => {
     const selectData = element.textContent;
-    inputBox.value = selectData;
     const webLink = `https://www.tarkett.rs/sr_RS/pretraga/proizvod?search[body]=&filter-category_b2b[]=${selectData}&userQuery=${selectData}`;
-    search.setAttribute("action", webLink);
-    search.classList.remove("search--active");
+    inputBox.value = selectData;
     recent.style.display = "none";
+    search.classList.remove("search--active");
+    search.setAttribute("action", webLink);
+    searchResetBtn.hidden = true;
   };
 
   // Function to show recent searches
   const showRecent = () => {
-    const recentItems = JSON.parse(localStorage.getItem("search")) || [];
-    const recentListItems = recentItems
+    recentList = JSON.parse(localStorage.getItem("search")) || [];
+    const recentListItems = recentList
       .map((recent) => `<li class='search__recent-item'>${recent}</li>`)
       .join("");
 
-    if (recentItems.length) {
+    if (recentList.length) {
       recent.style.display = "block";
       recentListBox.innerHTML = recentListItems;
       const clickableRecentItems = recentListBox.querySelectorAll(
@@ -104,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   submitBtn.addEventListener("click", () => {
+    recentList = JSON.parse(localStorage.getItem("search")) || [];
     recentList.push(inputBox.value);
     localStorage.setItem("search", JSON.stringify(recentList));
   });
@@ -111,12 +113,12 @@ document.addEventListener("DOMContentLoaded", () => {
   searchResetBtn.addEventListener("click", (e) => {
     e.preventDefault();
     inputBox.value = "";
+    recent.style.display = "none";
     results.innerHTML = "";
     search.classList.remove("search--active");
     search.setAttribute("action", "");
     searchResetBtn.hidden = true;
     submitBtn.setAttribute("href", "blank");
-    recent.style.display = "none";
   });
 
   search.addEventListener("click", (e) => {
