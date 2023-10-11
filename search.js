@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputBox = search.querySelector(".search__input");
   const recent = search.querySelector(".search__recent");
   const recentListBox = search.querySelector(".search__recent-list");
-  const recentListItem = search.querySelector(".search__recent-item");
   const results = search.querySelector(".search__results");
   const submitBtn = search.querySelector(".search__submit");
   const searchResetBtn = search.querySelector(".search__reset");
