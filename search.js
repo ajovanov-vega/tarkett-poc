@@ -34,19 +34,18 @@ const suggestions = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-  const search = document.querySelector(".search");
-  const inputBox = search.querySelector(".search__input");
-  const recent = search.querySelector(".search__recent");
-  const recentListBox = search.querySelector(".search__recent-list");
-  const results = search.querySelector(".search__results");
-  const submitBtn = search.querySelector(".search__submit");
-  const searchResetBtn = search.querySelector(".search__reset");
-  let recentList = JSON.parse(localStorage.getItem("search")) || [];;
+  const search = document.querySelector(".js-form");
+  const inputBox = search.querySelector(".js-search-input");
+  const results = search.querySelector(".js-results");
+  const submitBtn = search.querySelector(".js-submit");
+  const searchResetBtn = search.querySelector(".js-reset");
 
   // Function to show suggestions
   const showSuggestions = (list) => {
     const listData = list
-      .map((data) => `<li class='search__results-item'>${data}</li>`)
+      .map(
+        (data) => `<li class='search__results-item js-result-item'>${data}</li>`
+      )
       .join("");
     results.innerHTML = listData;
   };
@@ -56,33 +55,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectData = element.textContent;
     const webLink = `https://www.tarkett.rs/sr_RS/pretraga/proizvod?search[body]=&filter-category_b2b[]=${selectData}&userQuery=${selectData}`;
     inputBox.value = selectData;
-    recent.style.display = "none";
     search.classList.remove("search--active");
     search.setAttribute("action", webLink);
     searchResetBtn.hidden = true;
-  };
-
-  // Function to show recent searches
-  const showRecent = () => {
-    recentList = JSON.parse(localStorage.getItem("search")) || [];
-    const recentListItems = recentList
-      .map((recent) => `<li class='search__recent-item'>${recent}</li>`)
-      .join("");
-
-    if (recentList.length) {
-      recent.style.display = "block";
-      recentListBox.innerHTML = recentListItems;
-      const clickableRecentItems = recentListBox.querySelectorAll(
-        ".search__recent-item"
-      );
-      clickableRecentItems.forEach((item) => {
-        item.addEventListener("click", (e) => {
-          select(e.target);
-        });
-      });
-    } else {
-      recent.style.display = "none";
-    }
   };
 
   inputBox.addEventListener("keyup", (e) => {
@@ -95,25 +70,16 @@ document.addEventListener("DOMContentLoaded", () => {
       );
       search.classList.add("search--active");
       searchResetBtn.hidden = false;
-      showRecent();
       showSuggestions(emptyArray);
     } else {
       search.classList.remove("search--active");
       searchResetBtn.hidden = true;
-      recent.style.display = "none";
     }
-  });
-
-  submitBtn.addEventListener("click", () => {
-    recentList = JSON.parse(localStorage.getItem("search")) || [];
-    recentList.push(inputBox.value);
-    localStorage.setItem("search", JSON.stringify(recentList));
   });
 
   searchResetBtn.addEventListener("click", (e) => {
     e.preventDefault();
     inputBox.value = "";
-    recent.style.display = "none";
     results.innerHTML = "";
     search.classList.remove("search--active");
     search.setAttribute("action", "");
@@ -122,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   search.addEventListener("click", (e) => {
-    if (e.target.classList.contains("search__results-item")) {
+    if (e.target.classList.contains("js-result-item")) {
       select(e.target);
     }
   });
