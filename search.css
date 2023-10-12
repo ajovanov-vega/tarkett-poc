@@ -7,9 +7,12 @@
   --color-darker-grey: #222222;
   --color-darker-grey-rgb: 34, 34, 34;
   --color-silver: #cacbcc;
-  --color-grey: #fafafa;
+  --color-grey: #3c3c3c;
+  --color-grey-rgb: 60, 60, 60;
+  --color-light-grey: #919eab;
+  --color-light-grey-rgb: 145, 158, 171;
   --color-cool-grey: #727272;
-  --color-light-gold: #d1c598;
+  --color-light-gold: #f8f3e1;
 
   --transition: 0.3s ease;
 
@@ -31,20 +34,20 @@
 }
 
 body {
-  background: var(--color-white);
+  background: var(--color-silver);
   color: var(--color-darker-grey);
   font-size: 14px;
   font-weight: 400;
 }
 
 .main {
-  background-color: var(--color-grey);
   padding: 0 20px;
 }
 
 .container {
   margin: 80px auto;
   max-width: 785px;
+  padding: 20px 0;
   width: 100%;
 }
 
@@ -68,7 +71,8 @@ body {
   align-items: center;
   background-color: var(--color-white);
   border-radius: 8px 0 0 8px;
-  border: 1px solid transparent;
+  border: none;
+  outline: none;
   color: var(--color-darker-grey);
   cursor: pointer;
   display: inline-flex;
@@ -177,17 +181,40 @@ body {
   width: 14px;
 }
 
+/* Search results block */
+
 .search__results-container {
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-shadow: -20px 20px 40px -4px rgba(var(--color-light-grey-rgb), 0.24),
+    0px 0px 2px 0px rgba(var(--color-light-grey-rgb), 0.24);
+  left: 0;
+  transform: translateY(-6px);
+  padding: 16px;
   position: absolute;
   top: 100%;
-  left: 0;
-  width: 100%;
-  background-color: var(--color-white);
-  padding: 16px;
-  border-radius: 8px;
+  width: calc(100% - 29px);
+  margin: 0 9px 0 20px;
+  will-change: transform;
 }
 
-/* Search results block */
+.search__results-empty {
+  color: rgba(var(--color-grey-rgb), 0.6);
+  font-size: 16px;
+  padding: 39px 20px;
+  text-align: center;
+  line-height: 1.175;
+}
+
+.search__results-empty-icon {
+  margin-bottom: 28px;
+  display: block;
+  text-align: center;
+}
+
+.search__results-empty-icon svg {
+  width: 38px;
+}
 
 .search__results {
   width: 100%;
@@ -301,21 +328,24 @@ body {
 .search__results-list-info {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   flex: 1 1 auto;
 }
 
 .search__results-list-item-title {
-  flex: 1 1 auto;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 .search__results-list-square-meter {
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .search__results-list-square-package {
   color: rgba(var(--color-darker-grey-rgb), 0.5);
   font-size: 10px;
-  font-weight: 500;
+  font-weight: bold;
   line-height: 1;
 }
 
