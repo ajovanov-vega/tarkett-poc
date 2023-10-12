@@ -151,13 +151,17 @@ body {
   border: none;
   color: var(--color-cool-grey);
   cursor: pointer;
-  display: inline-flex;
   flex: 1 1 auto;
   justify-content: center;
   padding: 0 16px;
   text-align: center;
   transition: color var(--transition);
   width: auto;
+}
+
+.search__submit:not([hidden]),
+.search__reset:not([hidden]) {
+  display: inline-flex;
 }
 
 .search__submit:hover,
@@ -288,9 +292,10 @@ body {
 }
 
 .search__results-list-image {
+  aspect-ratio: 1/1;
   height: 100%;
-  width: 100%;
   object-fit: cover;
+  width: 100%;
 }
 
 .search__results-list-info {

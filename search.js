@@ -1,62 +1,79 @@
-const suggestions = [
-  "Dodaci za mokre prostore",
-  "Dodaci za sportske podove",
-  "Dodaci za ugradnju",
-  "Elastični podovi",
-  "Elektrode za varenje",
-  "Heterogeni Vinil",
-  "Homogeni Vinil",
-  "Iglani podovi",
-  "Komercijalne Tekstilne Rolne",
-  "LVT",
-  "Lajsne",
-  "Laminat",
-  "Linoleum",
-  "Mase, prajmeri i lepkovi",
-  "Parket",
-  "Podloge",
-  "Podna i zidna rešenja za mokre prostore",
-  "Podovi za kontrolu statičkog elektriciteta",
-  "Prateći asortiman",
-  "Protivklizni podovi",
-  "Specijalni proizvodi",
-  "Sportski podovi",
-  "Tekstilne ploče",
-  "Tekstilni podovi",
-  "Tepisi",
-  "Tepisoni",
-  "Tvrdi podovi",
-  "Veštačka trava",
-  "Vinil za kuću",
-  "Završne i prelazne lajsne",
-  "Zaštita i nega",
-  "Zidne obloge",
+const recommendations = [
+  "natural oak",
+  "oak light",
+  "oak medium",
+  "oak light grey",
+  "walnut tres",
+  "light walnut",
+  "dark walnut tres",
+  "Wood Flooring",
+  "All About Wood Floors",
+  "Wood Flooring Installation",
+  "Caring for Wood Flooring",
+  "Laminate Flooring",
+  "Laminate Flooring Installation",
+  "Caring for Laminated Flooring",
+  "Vinyl Flooring",
+  "All About Vinyl Floors",
+  "Vinyl Flooring Installation",
+  "Caring for Vinyl Flooring",
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
   const search = document.querySelector(".js-form");
   const inputBox = search.querySelector(".js-search-input");
-  const results = search.querySelector(".js-results");
+  const inputLabel = search.querySelector(".js-search-input-label");
+  const recommendation = search.querySelector(".js-recommendation");
+  const recommendationList = recommendation.querySelector(
+    ".js-recommendation-list"
+  );
   const submitBtn = search.querySelector(".js-submit");
   const searchResetBtn = search.querySelector(".js-reset");
 
-  // Function to show suggestions
-  const showSuggestions = (list) => {
+  const searchLink = (searchTerm) => {
+    return `https://home.tarkett.com/en_EU/search/products?search[body]=${searchTerm}&userQuery=${searchTerm}`;
+  };
+
+  // Function to show recommendations
+  const showRecommendations = (list, userValue) => {
+    if (!list || !userValue) {
+      recommendation.hidden = true;
+      return (recommendationList.innerHTML = "");
+    }
     const listData = list
-      .map(
-        (data) => `<li class='search__results-item js-result-item'>${data}</li>`
-      )
+      .map((data) => {
+        const regex = new RegExp("(" + userValue + ")", "gi");
+        let searchTerm = data;
+        searchTerm = searchTerm.replace(regex, "<strong>$1</strong>");
+        const searchQuery = data.toLowerCase();
+        const webLink = searchLink(searchQuery);
+
+        return `<li class="search__recommendation-list-item">
+          <a target="_blank" href="${webLink}" class="search__recommendation-list-link js-recommendation-item" href="blank"
+            >${searchTerm}</a
+          >`;
+      })
       .join("");
-    results.innerHTML = listData;
+    recommendationList.innerHTML = listData;
+    recommendation.hidden = false;
+
+    return;
+  };
+
+  const actionFill = (text) => {
+    if (!text) {
+      return (search.action = "");
+    }
+    return (search.action = searchLink(text));
   };
 
   // Function to select a suggestion
   const select = (element) => {
-    const selectData = element.textContent;
-    const webLink = `https://www.tarkett.rs/sr_RS/pretraga/proizvod?search[body]=&filter-category_b2b[]=${selectData}&userQuery=${selectData}`;
+    const selectData = element.textContent.toLowerCase();
+    actionFill(selectData);
     inputBox.value = selectData;
+    inputLabel.hidden = true;
     search.classList.remove("search--active");
-    search.setAttribute("action", webLink);
     searchResetBtn.hidden = true;
   };
 
@@ -65,30 +82,42 @@ document.addEventListener("DOMContentLoaded", () => {
     let emptyArray = [];
 
     if (userValue) {
-      emptyArray = suggestions.filter((data) =>
+      emptyArray = recommendations.filter((data) =>
         data.toLowerCase().includes(userValue.toLowerCase())
       );
+      actionFill(userValue);
+      inputLabel.hidden = false;
+      search.action = userValue.toLowerCase();
       search.classList.add("search--active");
       searchResetBtn.hidden = false;
-      showSuggestions(emptyArray);
-    } else {
-      search.classList.remove("search--active");
-      searchResetBtn.hidden = true;
+      showRecommendations(emptyArray, userValue);
+      return;
     }
+
+    actionFill();
+    inputLabel.hidden = true;
+    search.action = "";
+    search.classList.remove("search--active");
+    searchResetBtn.hidden = true;
+    showRecommendations();
+
+    return;
   });
 
   searchResetBtn.addEventListener("click", (e) => {
     e.preventDefault();
+    actionFill();
     inputBox.value = "";
-    results.innerHTML = "";
+    inputLabel.hidden = true;
+    search.action = "";
     search.classList.remove("search--active");
-    search.setAttribute("action", "");
     searchResetBtn.hidden = true;
+    showRecommendations();
     submitBtn.setAttribute("href", "blank");
   });
 
   search.addEventListener("click", (e) => {
-    if (e.target.classList.contains("js-result-item")) {
+    if (e.target.classList.contains("js-recommendation-item")) {
       select(e.target);
     }
   });
