@@ -1,16 +1,52 @@
 const recommendations = [
-  "Natural Oak",
-  "Oak Light",
-  "Oak medium",
-  "Oak light grey",
-  "Walnut tres",
-  "Light Walnut",
-  "Dark Walnut tres",
-  "Wood Flooring",
-  "Laminate Flooring",
-  "Caring for Laminated Flooring",
-  "Vinyl Flooring",
-  "Caring for Vinyl Flooring",
+  {
+    label: "Natural Oak",
+    filters: ["kind-of-wood-oak"],
+  },
+  {
+    label: "Oak Light",
+    filters: ["kind-of-wood-oak", "hue-light"],
+  },
+  {
+    label: "Oak medium",
+    filters: ["kind-of-wood-oak", "hue-medium"],
+  },
+  {
+    label: "Oak light gray",
+    filters: ["kind-of-wood-oak", "hue-light", "pattern-gray"],
+  },
+  {
+    label: "Walnut tres",
+    filters: ["kind-of-wood-walnut"],
+  },
+  {
+    label: "Light Walnut",
+    filters: ["kind-of-wood-walnut", "hue-light"],
+  },
+  {
+    label: "Dark Walnut tres",
+    filters: ["kind-of-wood-walnut", "hue-dark"],
+  },
+  {
+    label: "Wood Flooring",
+    filters: [],
+  },
+  {
+    label: "Laminate Flooring",
+    filters: [],
+  },
+  {
+    label: "Caring for Laminated Flooring",
+    filters: [],
+  },
+  {
+    label: "Vinyl Flooring",
+    filters: [],
+  },
+  {
+    label: "Caring for Vinyl Flooring",
+    filters: [],
+  },
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -24,12 +60,39 @@ document.addEventListener("DOMContentLoaded", () => {
   const recommendationList = recommendation.querySelector(
     ".js-recommendation-list"
   );
+  const common = search.querySelector(".js-common");
   const submitBtn = search.querySelector(".js-submit");
   const searchResetBtn = search.querySelector(".js-reset");
   const searchAll = search.querySelector(".js-results-all");
+  const filters = search.querySelector(".js-filters");
+  const filtersListBox = search.querySelector(".js-filters-list");
+  const filterToggle = search.querySelector(".js-filter-toggle");
+  const filterNoText = filters.querySelector(".js-filter-no-text");
+  const filterNo = filters.querySelector(".js-filter-no");
+  const filterClear = filters.querySelector(".js-filter-clear");
+  const filtersCheckboxes = filtersListBox.querySelectorAll(
+    "input[type=checkbox]"
+  );
+  let filtersList = [];
 
   const searchLink = (searchTerm) => {
     return `https://home.tarkett.com/en_EU/search/products?search[body]=${searchTerm}&userQuery=${searchTerm}`;
+  };
+
+  const toggleShowFilters = () => {
+    if (filters.classList.contains("search__filters--active")) {
+      return filters.classList.remove("search__filters--active");
+    }
+    return filters.classList.add("search__filters--active");
+  };
+
+  const toggleShowSearch = () => {
+    if (inputBox.value.length !== 0) return;
+    if (searchContainer.hidden) {
+      return (searchContainer.hidden = false);
+    }
+
+    return (searchContainer.hidden = true);
   };
 
   // Function to show recommendations
@@ -41,11 +104,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const listData = list
       .map((data) => {
         const regex = new RegExp("(" + userValue + ")", "gi");
-        let searchTerm = data;
+        let searchTerm = data.label;
         searchTerm = searchTerm.replace(regex, "<strong>$1</strong>");
-        const searchQuery = data.toLowerCase();
+        const searchQuery = data.label.toLowerCase();
         const webLink = searchLink(searchQuery);
-        recommendation.hidden = false;
+
+        if (!filters.classList.contains("search__filters--active"))
+          recommendation.hidden = false;
 
         return `<li class="search__recommendation-list-item">
           <a target="_blank" href="${webLink}" class="search__recommendation-list-link js-recommendation-item" href="blank"
@@ -60,17 +125,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const showResults = (list, userValue) => {
     searchList.hidden = true;
     searchEmpty.hidden = false;
+    searchAll.hidden = true;
+
     if (!list || !userValue) {
       return (searchList.innerHTML = "");
     }
     const listData = list
       .map((data) => {
-        const searchQuery = data.toLowerCase();
+        const searchQuery = data.label.toLowerCase();
         const webLink = searchLink(searchQuery);
         searchEmpty.hidden = true;
         searchList.hidden = false;
+        searchAll.hidden = false;
 
-        return `<li class="search__results-list-item">
+        return `<li class="search__results-list-item" data-filters="${data.filters}">
                   <a class="search__results-list-link" href="${webLink}" target="_blank">
                     <picture class="search__results-list-picture">
                       <source
@@ -85,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </picture>
                     <span class="search__results-list-info">
                       <span class="search__results-list-item-title"
-                        >${data}</span
+                        >${data.label}</span
                       >
                       <span class="search__results-list-square-meter"
                         >SEK 529 /M²</span
@@ -116,7 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectData = element.textContent.toLowerCase();
     actionFill(selectData);
     inputBox.value = selectData;
-    searchContainer.hidden = true;
     inputLabel.hidden = true;
     search.classList.remove("search--active");
     searchResetBtn.hidden = true;
@@ -128,22 +195,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (userValue) {
       searchList = recommendations.filter((data) =>
-        data.toLowerCase().includes(userValue.toLowerCase())
+        data.label.toLowerCase().includes(userValue.toLowerCase())
       );
-      searchContainer.hidden = false;
       actionFill(userValue);
       inputLabel.hidden = false;
       search.classList.add("search--active");
       searchResetBtn.hidden = false;
+      common.hidden = true;
       showRecommendations(searchList, userValue);
       showResults(searchList, userValue);
       return;
     }
 
-    searchContainer.hidden = true;
     actionFill();
     inputLabel.hidden = true;
+    common.hidden = false;
     search.classList.remove("search--active");
+    if (!filters.classList.contains("search__filters--active"))
+      common.hidden = false;
     searchResetBtn.hidden = true;
     showRecommendations();
     showResults();
@@ -163,11 +232,43 @@ document.addEventListener("DOMContentLoaded", () => {
     showRecommendations();
     showResults();
     submitBtn.setAttribute("href", "blank");
+    toggleShowSearch();
   });
 
   search.addEventListener("click", (e) => {
     if (e.target.classList.contains("js-recommendation-item")) {
       select(e.target);
     }
+  });
+
+  inputBox.addEventListener("click", toggleShowSearch);
+
+  filterToggle.addEventListener("click", toggleShowFilters);
+
+  filterClear.addEventListener("click", () => {
+    filtersList = [];
+    filterClear.hidden = true;
+    filterNoText.hidden = true;
+    filtersCheckboxes.forEach((checkbox) => (checkbox.checked = false));
+  });
+
+  filtersCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", () => {
+      filtersList = Array.from(filtersCheckboxes)
+        .filter((i) => i.checked)
+        .map((i) => i.value);
+
+      if (filtersList.length === 0) {
+        filterClear.hidden = true;
+        return (filterNoText.hidden = true);
+      }
+      filterNo.textContent = filtersList.length;
+      filterClear.hidden = false;
+      filterNoText.hidden = false;
+
+      console.log(filtersList);
+
+      return;
+    });
   });
 });

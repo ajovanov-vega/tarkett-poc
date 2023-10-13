@@ -4,11 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RFP Tarkett - Search component</title>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="./search.css" />
   </head>
   <body>
     <main class="main">
       <div class="container">
+        <a target="_blank" class="logo" href="https://home.tarkett.com/en_EU">
+          <img
+            width="182"
+            height="40"
+            src="./assets/svg/logo-blue.svg"
+            alt="Tarkett"
+          />
+        </a>
         <form
           class="search js-search-form"
           target="_blank"
@@ -16,23 +25,6 @@
           action=""
         >
           <div class="search__components">
-            <div class="search__filter">
-              <button class="search__filter-btn js-filter">
-                <span class="search__filter-btn-text">All Products</span>
-                <span class="search__filter-btn-icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    xml:space="preserve"
-                    viewBox="0 0 25 15.5"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="m2.9 0 9.6 9.6L22.1 0 25 3 12.5 15.5 0 3l2.9-3z"
-                    />
-                  </svg>
-                </span>
-              </button>
-            </div>
             <div class="search__component">
               <div class="search__input-holder">
                 <div class="search__input-prefix">
@@ -77,7 +69,520 @@
                 >
               </div>
               <div class="search__results-container js-search-container" hidden>
-                <div class="search__common">
+                <!-- Filters -->
+                <div class="search__filters js-filters">
+                  <div class="search__filters-top">
+                    <button
+                      type="button"
+                      class="search__filters-toggle js-filter-toggle"
+                    >
+                      <span class="search__filters-toggle-text">Filters</span>
+                      <span class="search__filters-toggle-icon">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          xml:space="preserve"
+                          viewBox="0 0 25 15.5"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="m2.9 0 9.6 9.6L22.1 0 25 3 12.5 15.5 0 3l2.9-3z"
+                          />
+                        </svg>
+                      </span>
+                      <span
+                        class="search__filters-toggle-number js-filter-no-text"
+                        hidden
+                      >
+                        <strong class="js-filter-no">0</strong> filters applied
+                      </span>
+                    </button>
+                    <button
+                      class="search__filters-clear js-filter-clear"
+                      type="button"
+                      hidden
+                    >
+                      <span class="search__filters-clear-text"
+                        >Clear all Filters</span
+                      >
+                      <span class="search__filters-clear-icon">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 14 14"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="m7 8.4-4.9 4.9a.948.948 0 0 1-.7.275.948.948 0 0 1-.7-.275.948.948 0 0 1-.275-.7c0-.283.092-.517.275-.7L5.6 7 .7 2.1a.948.948 0 0 1-.275-.7c0-.283.092-.517.275-.7a.948.948 0 0 1 .7-.275c.283 0 .517.092.7.275L7 5.6 11.9.7a.948.948 0 0 1 .7-.275c.283 0 .517.092.7.275a.948.948 0 0 1 .275.7.948.948 0 0 1-.275.7L8.4 7l4.9 4.9a.949.949 0 0 1 .275.7.948.948 0 0 1-.275.7.948.948 0 0 1-.7.275.948.948 0 0 1-.7-.275L7 8.4Z"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                  <div class="search__filters-container js-filters-list">
+                    <div class="search__filters-groups">
+                      <div class="search__filters-group">
+                        <h3 class="search__filters-group-title">Thickness</h3>
+                        <ul class="search__filters-group-list">
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="thickness"
+                                value="thickness-3.5"
+                              />3.5
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="thickness"
+                                value="thickness-2.5"
+                              />2.5
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="thickness"
+                                value="thickness-0.6"
+                              />0.6
+                            </label>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="search__filters-group">
+                        <h3 class="search__filters-group-title">
+                          Laying Method
+                        </h3>
+                        <ul class="search__filters-group-list">
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="layingMethod"
+                                value="layingMethod-click"
+                              />Click
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="layingMethod"
+                                value="layingMethod-bonding"
+                              />Bonding/Floating
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="layingMethod"
+                                value="layingMethod-gluing"
+                              />Gluing down
+                            </label>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="search__filters-group">
+                        <h3 class="search__filters-group-title">Hue</h3>
+                        <ul class="search__filters-group-list">
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="hue"
+                                value="hue-dark"
+                              />Dark
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="hue"
+                                value="hue-medium"
+                              />Medium
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="hue"
+                                value="hue-light"
+                              />Light
+                            </label>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="search__filters-group">
+                        <h3 class="search__filters-group-title">
+                          Surface Treatment
+                        </h3>
+                        <ul class="search__filters-group-list">
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="surface-treatment"
+                                value="surface-treatment-natura-matt-lacquer"
+                              />Natura Matt Lacquer
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="surface-treatment"
+                                value="surface-treatment-hardwax-oil"
+                              />Hardwax Oil
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="surface-treatment"
+                                value="surface-treatment-extra-matt"
+                              />Extra Matt
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="surface-treatment"
+                                value="surface-treatment-varnish"
+                              />Varnish
+                            </label>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="search__filters-group">
+                        <h3 class="search__filters-group-title">Pattern</h3>
+                        <ul class="search__filters-group-list">
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="pattern"
+                                value="pattern-1-bar"
+                              />1-bar
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="pattern"
+                                value="pattern-2-bar"
+                              />2-bar
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="pattern"
+                                value="pattern-3-bar"
+                              />3-bar
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="pattern"
+                                value="pattern-grid-board"
+                              />Grid Board
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="pattern"
+                                value="pattern-herringbone-parquet"
+                              />Herringbone Parquet
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="pattern"
+                                value="pattern-large-squares"
+                              />Large Squares
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="pattern"
+                                value="pattern-small-squares"
+                              />Small Squares
+                            </label>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="search__filters-group">
+                        <h3 class="search__filters-group-title">
+                          Color Family
+                        </h3>
+                        <ul class="search__filters-group-list">
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="color-family"
+                                value="pattern-brown"
+                              />Brown
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="color-family"
+                                value="pattern-white"
+                              />White
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="color-family"
+                                value="pattern-beige"
+                              />Beige
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="color-family"
+                                value="pattern-gray"
+                              />Gray
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="color-family"
+                                value="pattern-black"
+                              />Black
+                            </label>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="search__filters-group">
+                        <h3 class="search__filters-group-title">
+                          Kind of Wood
+                        </h3>
+                        <ul class="search__filters-group-list">
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="kind-of-wood"
+                                value="kind-of-wood-oak"
+                              />Oak
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="kind-of-wood"
+                                value="kind-of-wood-box"
+                              />Box
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="kind-of-wood"
+                                value="kind-of-wood-walnut"
+                              />Walnut
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="kind-of-wood"
+                                value="kind-of-wood-book"
+                              />Book
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="kind-of-wood"
+                                value="kind-of-wood-birch"
+                              />Birch
+                            </label>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="search__filters-group">
+                        <h3 class="search__filters-group-title">Width (cm)</h3>
+                        <ul class="search__filters-group-list">
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="width"
+                                value="width-19"
+                              />19
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="width"
+                                value="width-19-4"
+                              />19.4
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="width"
+                                value="width-19-2"
+                              />19.2
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="width"
+                                value="width-16-2"
+                              />16.2
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="width"
+                                value="width-13-4"
+                              />13.4
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="width"
+                                value="width-12"
+                              />12
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="width"
+                                value="width-11"
+                              />11
+                            </label>
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="search__filters-group">
+                        <h3 class="search__filters-group-title">Collection</h3>
+                        <ul class="search__filters-group-list">
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="collection"
+                                value="collection-shade"
+                              />Shade
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="collection"
+                                value="collection-pure"
+                              />Pure
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="collection"
+                                value="collection-prestige"
+                              />Prestige
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="collection"
+                                value="collection-grace"
+                              />Grace
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="collection"
+                                value="collection-viva"
+                              />Viva
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="collection"
+                                value="collection-noble"
+                              />Noble
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="collection"
+                                value="collection-heritage"
+                              />Heritage
+                            </label>
+                          </li>
+                          <li class="search__filters-group-list-item">
+                            <label class="search__checkbox">
+                              <input
+                                type="checkbox"
+                                name="collection"
+                                value="collection-segno"
+                              />Segno
+                            </label>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Common Search -->
+                <div class="search__common js-common">
                   <h2 class="search__common-title">Common Searches</h2>
                   <ul class="search__common-list">
                     <li class="search__common-list-item">
@@ -105,12 +610,14 @@
                     </li>
                   </ul>
                 </div>
+                <!-- Recommendation search / Do you mean -->
                 <div class="search__recommendation js-recommendation" hidden>
                   <h2 class="search__recommendation-title">Do you mean</h2>
                   <ul
                     class="search__recommendation-list js-recommendation-list"
                   ></ul>
                 </div>
+                <!-- Search results -->
                 <div class="search__results">
                   <div class="search__results-top">
                     <h2 class="search__results-title">Top Product Results</h2>
@@ -150,424 +657,7 @@
                       the filters and search term.
                     </p>
                   </div>
-                  <ul class="search__results-list js-search-list" hidden>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                    <li class="search__results-list-item">
-                      <a class="search__results-list-link" href="blank">
-                        <picture class="search__results-list-picture">
-                          <source
-                            media="(min-width:1024px)"
-                            srcset="./assets/images/example-image-big.jpg"
-                          />
-                          <img
-                            class="search__results-list-image"
-                            src="./assets/images/example-image-small.jpg"
-                            alt="Woodstock XL Long BLACKSMITH OAK AGED"
-                          />
-                        </picture>
-                        <span class="search__results-list-info">
-                          <span class="search__results-list-item-title"
-                            >Woodstock XL Long BLACKSMITH OAK AGED</span
-                          >
-                          <span class="search__results-list-square-meter"
-                            >SEK 529 /M²</span
-                          >
-                          <span class="search__results-list-square-package"
-                            >SEK 1,334.00 /PACKAGE</span
-                          >
-                        </span>
-                      </a>
-                    </li>
-                  </ul>
+                  <ul class="search__results-list js-search-list" hidden></ul>
                 </div>
               </div>
             </div>
