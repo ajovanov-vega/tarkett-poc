@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchListBox = search.querySelector(".js-search-list");
   const searchResetBtn = search.querySelector(".js-reset");
   const searchResults = search.querySelector(".js-search-results");
+  const searchResultsTop = search.querySelector(".js-search-results-top");
   const common = search.querySelector(".js-common");
   const filters = search.querySelector(".js-filters");
   const filterClear = filters.querySelector(".js-filter-clear");
@@ -135,45 +136,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to show search results
   const showResults = () => {
-    searchListBox.hidden = true;
-    searchEmpty.hidden = false;
-    searchAll.hidden = true;
-    common.hidden = searchList.length !== 0;
+    if (!exampleData.length) return;
 
-    if (searchList.length === 0 && !userValue) {
-      searchListBox.innerHTML = "";
-      return;
+    if (!!userValue || !!selectedFilters.length) {
+      // Filter results based on selected filters and user input
+      const filteredResults = exampleData.filter((data) => {
+        return (
+          !selectedFilters.length || // Show all results if no filters are selected
+          (selectedFilters.every((filter) => data.filters.includes(filter)) &&
+            (!userValue ||
+              data.label.toLowerCase().includes(userValue.toLowerCase())))
+        );
+      });
+
+      const isResultsAvailable = !!filteredResults.length;
+      const isFiltersWithoutResults =
+        !isResultsAvailable && !!selectedFilters.length;
+
+      searchListBox.hidden = !isResultsAvailable;
+      searchEmpty.hidden = isResultsAvailable || !isFiltersWithoutResults;
+      common.hidden = isResultsAvailable;
+      searchResults.hidden = false;
+      searchResultsTop.hidden = !isResultsAvailable;
+
+      if (!isResultsAvailable) return;
+
+      const searchResultsHTML = filteredResults
+        .map((data) => {
+          const searchQuery = data.label.toLowerCase();
+          const webLink = searchLink(searchQuery);
+
+          return `<li class="search__results-list-item js-results-item">
+            <a class="search__results-list-link" href="${webLink}" target="_blank">
+              <picture class="search__results-list-picture">
+                <source media="(min-width:1024px)" srcset="./assets/images/example-image-big.jpg" />
+                <img class="search__results-list-image" src="./assets/images/example-image-small.jpg" alt="${userValue}" />
+              </picture>
+              <span class="search__results-list-info">
+                <span class="search__results-list-item-title">${data.label}</span>
+                <span class="search__results-list-square-meter">SEK 529 /M²</span>
+                <span class="search__results-list-square-package">SEK 1,334.00 /PACKAGE</span>
+              </span>
+            </a>
+          </li>`;
+        })
+        .join("");
+
+      return (searchListBox.innerHTML = searchResultsHTML);
     }
 
-    const filteredResults = searchList.filter((data) => {
-      return selectedFilters.every((filter) => data.filters.includes(filter));
-    });
+    searchListBox.innerHTML = "";
+    common.hidden = false;
+    searchResults.hidden = true;
+    searchResultsTop.hidden = false;
 
-    const searchResultsHTML = filteredResults
-      .map((data) => {
-        const searchQuery = data.label.toLowerCase();
-        const webLink = searchLink(searchQuery);
-        searchEmpty.hidden = true;
-        searchListBox.hidden = false;
-        searchAll.hidden = false;
-
-        return `<li class="search__results-list-item js-results-item" data-filters="${data.filters}">
-                <a class="search__results-list-link" href="${webLink}" target="_blank">
-                  <picture class="search__results-list-picture">
-                    <source media="(min-width:1024px)" srcset="./assets/images/example-image-big.jpg" />
-                    <img class="search__results-list-image" src="./assets/images/example-image-small.jpg" alt="${userValue}" />
-                  </picture>
-                  <span class="search__results-list-info">
-                    <span class="search__results-list-item-title">${data.label}</span>
-                    <span class="search__results-list-square-meter">SEK 529 /M²</span>
-                    <span class="search__results-list-square-package">SEK 1,334.00 /PACKAGE</span>
-                  </span>
-                </a>
-              </li>`;
-      })
-      .join("");
-
-    searchListBox.innerHTML = searchResultsHTML;
+    return;
   };
 
   const formActionLink = (text) => {
@@ -204,15 +221,6 @@ document.addEventListener("DOMContentLoaded", () => {
     formActionLink(userValue);
     inputLabel.hidden = !userValue;
     searchResetBtn.hidden = !userValue;
-    searchResults.hidden = !userValue;
-
-    if (!!userValue) {
-      search.classList.add("search--active");
-      common.hidden = true;
-    } else {
-      common.hidden = filters.classList.contains("search__filters--active");
-      searchEmpty.hidden = true;
-    }
 
     searchList = userValue
       ? exampleData.filter((data) =>
@@ -222,6 +230,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showRecommendations();
     showResults();
+
+    if (!!userValue) {
+      search.classList.add("search--active");
+      common.hidden = true;
+    } else {
+      common.hidden = filters.classList.contains("search__filters--active");
+      searchEmpty.hidden = true;
+    }
   });
 
   inputBox.addEventListener("click", toggleShowSearch);
