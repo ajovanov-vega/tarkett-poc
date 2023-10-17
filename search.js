@@ -167,20 +167,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to show search results
   const showResults = () => {
-    if (!exampleData.length) return;
+    if (exampleData.length === 0) return;
 
-    if (!!userValue || !!selectedFilters.length) {
+    const hasFilters = selectedFilters.length > 0;
+    const hasUserValue = userValue.trim() !== "";
+
+    if (hasUserValue || hasFilters) {
       // Filter results based on selected filters and user input
       const filteredResults = exampleData.filter((data) => {
         return (
-          (!selectedFilters.length && !userValue) || // Show all results if no filters are selected
+          (!hasFilters && !hasUserValue) || // Show all results if no filters are selected
           (selectedFilters.every((filter) => data.filters.includes(filter)) &&
-            (!userValue ||
+            (!hasUserValue ||
               data.label.toLowerCase().includes(userValue.toLowerCase())))
         );
       });
 
-      const isResultsAvailable = !!filteredResults.length;
+      const isResultsAvailable = filteredResults.length > 0;
 
       searchListBox.hidden = !isResultsAvailable;
       searchEmpty.hidden = isResultsAvailable;
@@ -188,7 +191,9 @@ document.addEventListener("DOMContentLoaded", () => {
       searchResults.hidden = false;
       searchResultsTop.hidden = !isResultsAvailable;
 
-      if (!isResultsAvailable) return;
+      if (!isResultsAvailable) {
+        return (searchListBox.innerHTML = "");
+      }
 
       const searchResultsHTML = filteredResults
         .map((data, index) => {
