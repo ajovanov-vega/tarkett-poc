@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const recommendationList = recommendation.querySelector(
     ".js-recommendation-list"
   );
-  const submitBtn = search.querySelector(".js-submit");
 
   // Example data
   const exampleData = [
@@ -208,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   data.label + "-" + (index + 1)
                 }" class="search__results-list-image" src="${
             data.imageSmall
-          }" alt="${userValue}" />
+          }" />
               </picture>
               <span class="search__results-list-info">
                 <span class="search__results-list-item-title">${
@@ -302,7 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
     searchResetBtn.hidden = true;
     showRecommendations();
     showResults();
-    submitBtn.setAttribute("href", "blank");
     toggleShowSearch();
   });
 
