@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!isResultsAvailable) return;
 
       const searchResultsHTML = filteredResults
-        .map((data) => {
+        .map((data, index) => {
           const searchQuery = data.label.toLowerCase();
           const webLink = searchLink(searchQuery);
 
@@ -170,10 +170,14 @@ document.addEventListener("DOMContentLoaded", () => {
             <a class="search__results-list-link" href="${webLink}" target="_blank">
               <picture class="search__results-list-picture">
                 <source media="(min-width:1024px)" srcset="./assets/images/example-image-big.jpg" />
-                <img class="search__results-list-image" src="./assets/images/example-image-small.jpg" alt="${userValue}" />
+                <img alt="${
+                  data.label + "-" + (index + 1)
+                }" class="search__results-list-image" src="./assets/images/example-image-small.jpg" alt="${userValue}" />
               </picture>
               <span class="search__results-list-info">
-                <span class="search__results-list-item-title">${data.label}</span>
+                <span class="search__results-list-item-title">${
+                  data.label
+                }</span>
                 <span class="search__results-list-square-meter">SEK 529 /M²</span>
                 <span class="search__results-list-square-package">SEK 1,334.00 /PACKAGE</span>
               </span>
