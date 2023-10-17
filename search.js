@@ -29,50 +29,81 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       label: "Natural Oak",
       filters: ["kind-of-wood-oak"],
+      image:
+        "https://home.tarkett.com/media/img/M/TH_RR_ICONIK_Classical_Oak_Natural_001.jpg",
+      imageSmall:
+        "https://home.tarkett.com/media/img/S/TH_RR_ICONIK_Classical_Oak_Natural_001.jpg",
     },
     {
       label: "Oak Light",
       filters: ["kind-of-wood-oak", "hue-light"],
+      image:
+        "https://home.tarkett.com/media/img/M/TH_RR_ICONIK_French_Oak_Light_001.jpg",
+      imageSmall:
+        "https://home.tarkett.com/media/img/S/TH_RR_ICONIK_French_Oak_Light_001.jpg",
     },
     {
-      label: "Oak medium",
+      label: "Oak Medium",
       filters: ["kind-of-wood-oak", "hue-medium"],
+      image:
+        "https://media.tarkett-image.com/medium/TH_RR_ICONIK_Fumed_Oak_Medium_Brown_001.jpg",
+      imageSmall:
+        "https://media.tarkett-image.com/small/TH_RR_ICONIK_Fumed_Oak_Medium_Brown_001.jpg",
     },
     {
-      label: "Oak light gray",
+      label: "Oak Light Grey",
       filters: ["kind-of-wood-oak", "hue-light", "pattern-gray"],
+      image:
+        "https://home.tarkett.com/media/img/M/TH_RR_ICONIK_Legacy_Oak_Light_grey_001.jpg",
+      imageSmall:
+        "https://home.tarkett.com/media/img/S/TH_RR_ICONIK_Legacy_Oak_Light_grey_001.jpg",
     },
     {
       label: "Walnut tres",
       filters: ["kind-of-wood-walnut"],
+      image: "https://home.tarkett.com/media/img/M/TH_8577007_8577008_001.jpg",
+      imageSmall:
+        "https://home.tarkett.com/media/img/S/TH_8577007_8577008_001.jpg",
     },
     {
       label: "Light Walnut",
       filters: ["kind-of-wood-walnut", "hue-light"],
+      image:
+        "https://media.tarkett-image.com/medium/TH_8582002_001_800_800.jpg",
+      imageSmall:
+        "https://media.tarkett-image.com/small/TH_8582002_001_800_800.jpg",
     },
     {
       label: "Dark Walnut tres",
       filters: ["kind-of-wood-walnut", "hue-dark"],
+      image:
+        "https://media.tarkett-image.com/medium/TH_8577007_8577008_001.jpg",
+      imageSmall:
+        "https://media.tarkett-image.com/small/TH_8577007_8577008_001.jpg",
     },
     {
-      label: "Wood Flooring",
-      filters: [],
+      label: "Tundra Oak Spring",
+      filters: ["kind-of-wood-oak", "layingMethod-click"],
+      image:
+        "https://media.tarkett-image.com/medium/TH_7806006_001_800_800.jpg",
+      imageSmall:
+        "https://media.tarkett-image.com/small/TH_7806006_001_800_800.jpg",
     },
     {
-      label: "Laminate Flooring",
-      filters: [],
+      label: "Tendenza Cool Grey",
+      filters: ["hue-light", "pattern-gray"],
+      image:
+        "https://media.tarkett-image.com/medium/TH_RR_ICONIK_Tendenza_Cool_Grey_001.jpg",
+      imageSmall:
+        "https://media.tarkett-image.com/small/TH_RR_ICONIK_Tendenza_Cool_Grey_001.jpg",
     },
     {
-      label: "Caring for Laminated Flooring",
-      filters: [],
-    },
-    {
-      label: "Vinyl Flooring",
-      filters: [],
-    },
-    {
-      label: "Caring for Vinyl Flooring",
-      filters: [],
+      label: "Admiral Dark Brown",
+      filters: ["hue-dark", "pattern-brown"],
+      image:
+        "https://media.tarkett-image.com/medium/TH_LA_SKIRTING_Classic_Walnut_Red_L179.jpg",
+      imageSmall:
+        "https://media.tarkett-image.com/small/TH_LA_SKIRTING_Classic_Walnut_Red_L179.jpg",
     },
   ];
 
@@ -169,10 +200,12 @@ document.addEventListener("DOMContentLoaded", () => {
           return `<li class="search__results-list-item js-results-item">
             <a class="search__results-list-link" href="${webLink}" target="_blank">
               <picture class="search__results-list-picture">
-                <source media="(min-width:1024px)" srcset="./assets/images/example-image-big.jpg" />
+                <source media="(min-width:1024px)" srcset="${data.image}" />
                 <img alt="${
                   data.label + "-" + (index + 1)
-                }" class="search__results-list-image" src="./assets/images/example-image-small.jpg" alt="${userValue}" />
+                }" class="search__results-list-image" src="${
+            data.imageSmall
+          }" alt="${userValue}" />
               </picture>
               <span class="search__results-list-info">
                 <span class="search__results-list-item-title">${
