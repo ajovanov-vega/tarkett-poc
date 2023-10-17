@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Filter results based on selected filters and user input
       const filteredResults = exampleData.filter((data) => {
         return (
-          !selectedFilters.length || // Show all results if no filters are selected
+          (!selectedFilters.length && !userValue) || // Show all results if no filters are selected
           (selectedFilters.every((filter) => data.filters.includes(filter)) &&
             (!userValue ||
               data.label.toLowerCase().includes(userValue.toLowerCase())))
@@ -181,11 +181,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const isResultsAvailable = !!filteredResults.length;
-      const isFiltersWithoutResults =
-        !isResultsAvailable && !!selectedFilters.length;
 
       searchListBox.hidden = !isResultsAvailable;
-      searchEmpty.hidden = isResultsAvailable || !isFiltersWithoutResults;
+      searchEmpty.hidden = isResultsAvailable;
       common.hidden = isResultsAvailable;
       searchResults.hidden = false;
       searchResultsTop.hidden = !isResultsAvailable;
