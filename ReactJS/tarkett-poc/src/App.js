@@ -448,13 +448,17 @@ const App = () => {
     setFilterNo(selected.length);
   };
 
+  const handleResultsUpdate = (value) => {
+    setAreResultsAvailable(value);
+  };
+
   useEffect(() => {
     setShowEmpty(!areResultsAvailable);
     setShowCommon(!areResultsAvailable);
     setShowSearchResultsTop(areResultsAvailable);
 
     return () => {
-      setShowEmpty(true);
+      setShowEmpty(false);
       setShowCommon(false);
       setShowSearchResultsTop(false);
     };
@@ -479,7 +483,7 @@ const App = () => {
           <img width={182} height={40} src={logo} alt="Tarkett" />
         </a>
         <form
-          className={`search js-search-form ${showSearch && "search--active"}`}
+          className={`search ${showSearch && "search--active"}`}
           target="_blank"
           method="POST"
           action={formAction}
@@ -504,7 +508,7 @@ const App = () => {
                 <input
                   ref={inputRef}
                   id="search"
-                  className="search__input js-search-input"
+                  className="search__input"
                   type="text"
                   placeholder="Search Products"
                   onInput={(e) => handleInputChange(e)}
@@ -540,7 +544,7 @@ const App = () => {
                 <div className="search__results-wrapper">
                   {/* Filters */}
                   <div
-                    className={`search__filters js-filters ${
+                    className={`search__filters ${
                       showFilters && "search__filters--active"
                     }`}
                   >
@@ -567,8 +571,7 @@ const App = () => {
                         </span>
                         {showFilterNoText && (
                           <span className="search__filters-toggle-number">
-                            <strong className="js-filter-no">{filterNo}</strong>{" "}
-                            filters applied
+                            <strong>{filterNo}</strong> filters applied
                           </span>
                         )}
                       </button>
@@ -605,7 +608,7 @@ const App = () => {
                   </div>
                   {/* Common Search */}
                   {showCommon && (
-                    <div className="search__common js-common">
+                    <div className="search__common">
                       <h2 className="search__common-title">Common Searches</h2>
                       <ul className="search__common-list">
                         {exampleCommonSearch.map((common) => {
@@ -682,13 +685,15 @@ const App = () => {
                         </p>
                       </div>
                     )}
-                    <SearchResults
-                      data={data}
-                      selectedFilters={selectedFilters}
-                      userValue={userValue}
-                      searchLink={searchLink}
-                      setAreResultsAvailable={setAreResultsAvailable}
-                    />
+                    {data && (
+                      <SearchResults
+                        data={data}
+                        selectedFilters={selectedFilters}
+                        userValue={userValue}
+                        searchLink={searchLink}
+                        onUpdateResults={handleResultsUpdate}
+                      />
+                    )}
                   </div>
                 </div>
               </div>

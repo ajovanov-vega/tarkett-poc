@@ -36,9 +36,7 @@ const Recommendations = ({ list, userValue, searchLink }) => {
   return (
     <div className="search__recommendation">
       <h2 className="search__recommendation-title">Do you mean</h2>
-      <ul className="search__recommendation-list js-recommendation-list">
-        {recommendationsList()}
-      </ul>
+      <ul className="search__recommendation-list">{recommendationsList()}</ul>
     </div>
   );
 };

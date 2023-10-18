@@ -2,6 +2,7 @@ import React from "react";
 
 const Filters = ({ filters, onCheckboxChange }) => {
   if (!filters) return null;
+
   const filtersItems = (filtersKey, filtersValue) => {
     return Object.entries(filtersValue.items).map(([valueKey, valueName]) => {
       return (

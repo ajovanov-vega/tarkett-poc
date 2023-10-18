@@ -1,38 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const SearchResults = ({
   data,
   selectedFilters,
   userValue,
   searchLink,
-  setAreResultsAvailable,
+  onUpdateResults,
 }) => {
-  if (data.length === 0) return null;
-
   const hasFilters = selectedFilters.length > 0;
   const hasUserValue = userValue.trim() !== "";
 
-  if (hasUserValue || hasFilters) {
-    // Filter results based on selected filters and user input
-    const results = data.filter((filteredData) => {
-      return (
-        (!hasFilters && !hasUserValue) ||
-        (selectedFilters.every((filter) =>
-          filteredData.filters.includes(filter)
-        ) &&
-          (!hasUserValue ||
-            filteredData.label.toLowerCase().includes(userValue.toLowerCase())))
-      );
-    });
-
-    const areResultsAvailable = results.length > 0;
-    setAreResultsAvailable(areResultsAvailable);
-
-    if (!areResultsAvailable) {
-      return null;
+  const filterResults = () => {
+    if (hasFilters || hasUserValue) {
+      return data.filter((filteredData) => {
+        return (
+          (!hasFilters && !hasUserValue) ||
+          (selectedFilters.every((filter) =>
+            filteredData.filters.includes(filter)
+          ) &&
+            (!hasUserValue ||
+              filteredData.label
+                .toLowerCase()
+                .includes(userValue.toLowerCase())))
+        );
+      });
     }
+    return [];
+  };
 
-    const searchResultsHTML = results.map((resultsData, index) => {
+  const results = filterResults();
+  const areResultsAvailable = results.length > 0;
+
+  useEffect(() => {
+    onUpdateResults(areResultsAvailable);
+  }, [onUpdateResults, areResultsAvailable]);
+
+  if (!areResultsAvailable) {
+    return null;
+  }
+
+  const renderSearchResults = () => {
+    return results.map((resultsData, index) => {
       const searchQuery = resultsData.label.toLowerCase();
       const webLink = searchLink(searchQuery); // Assuming searchLink is defined elsewhere
 
@@ -62,12 +70,9 @@ const SearchResults = ({
         </li>
       );
     });
+  };
 
-    return <ul className="search__results-list">{searchResultsHTML}</ul>;
-  }
-
-  setAreResultsAvailable(false);
-  return null;
+  return <ul className="search__results-list">{renderSearchResults()}</ul>;
 };
 
 export default SearchResults;
