@@ -1,6 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import Recommendations from "./components/Recommendations";
+import SearchResults from "./components/SearchResults";
 
 const exampleFilters = {
   thickness: {
@@ -348,14 +350,14 @@ const exampleCommonSearch = [
   },
 ];
 
-function App() {
+const App = () => {
   const inputRef = useRef(null);
   const [showFilters, setShowFilters] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
-  const [showRecommendations, setShowRecommendations] = useState(false);
   const [showInputLabel, setShowInputLabel] = useState(false);
   const [showResetButton, setShowResetButton] = useState(false);
-  const [showCommon, setShowCommon] = useState(false);
+  const [showCommon, setShowCommon] = useState(true);
+  const [areResultsAvailable, setAreResultsAvailable] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [showSearchResultsTop, setShowSearchResultsTop] = useState(false);
   const [showEmpty, setShowEmpty] = useState(false);
@@ -368,6 +370,7 @@ function App() {
   const [searchList, setSearchList] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [userValue, setUserValue] = useState("");
+  const [checkboxes, setCheckboxes] = useState([]);
   const [data] = useState(exampleData);
 
   const searchLink = (searchTerm) => {
@@ -379,111 +382,10 @@ function App() {
   };
 
   const toggleShowSearch = () => {
-    setShowSearch(!showSearch);
-  };
-
-  const populateRecommendations = () => {
-    let recommendationsHTML = "";
-
-    if (searchList.length === 0 && !userValue) {
-      recommendationsHTML = "";
-      return;
+    if (searchList.length > 0 || selectedFilters.length > 0) {
+      return setShowSearch(true);
     }
-
-    recommendationsHTML = searchList
-      .map((data) => {
-        const regex = new RegExp("(" + userValue + ")", "gi");
-        const searchTerm = data.label.replace(regex, "<strong>$1</strong>");
-        const searchQuery = data.label.toLowerCase();
-        const webLink = searchLink(searchQuery);
-
-        if (showFilters === false) {
-          setShowRecommendations(true);
-        }
-
-        return `<li class="search__recommendation-list-item">
-        <a target="_blank" href="${webLink}" class="search__recommendation-list-link js-recommendation-item" href="blank">
-          ${searchTerm}
-        </a>
-      </li>`;
-      })
-      .join("");
-
-    return recommendationsHTML;
-  };
-
-  const showResults = () => {
-    if (exampleData.length === 0) return;
-
-    const hasFilters = selectedFilters.length > 0;
-    const hasUserValue = userValue.trim() !== "";
-
-    if (hasUserValue || hasFilters) {
-      // Filter results based on selected filters and user input
-      const filteredResults = exampleData.filter((data) => {
-        return (
-          (!hasFilters && !hasUserValue) || // Show all results if no filters are selected
-          (selectedFilters.every((filter) => data.filters.includes(filter)) &&
-            (!hasUserValue ||
-              data.label.toLowerCase().includes(userValue.toLowerCase())))
-        );
-      });
-
-      const isResultsAvailable = filteredResults.length > 0;
-
-      // Set state to control visibility
-      setShowSearchListBox(!isResultsAvailable);
-      setShowEmpty(!isResultsAvailable);
-      setShowCommon(!isResultsAvailable);
-      setShowSearchResults(false);
-      setShowSearchResultsTop(!isResultsAvailable);
-
-      if (!isResultsAvailable) {
-        return "";
-      }
-
-      const searchResultsHTML = filteredResults.map((data, index) => {
-        const searchQuery = data.label.toLowerCase();
-        const webLink = searchLink(searchQuery);
-
-        return (
-          <li className="search__results-list-item js-results-item" key={index}>
-            <a
-              className="search__results-list-link"
-              href={webLink}
-              target="_blank"
-            >
-              <picture className="search__results-list-picture">
-                <source media="(min-width:1024px)" srcSet={data.image} />
-                <img
-                  alt={`${data.label}-${index + 1}`}
-                  className="search__results-list-image"
-                  src={data.imageSmall}
-                />
-              </picture>
-              <span className="search__results-list-info">
-                <span className="search__results-list-item-title">
-                  {data.label}
-                </span>
-                <span className="search__results-list-square-meter">
-                  SEK 529 /M²
-                </span>
-                <span className="search__results-list-square-package">
-                  SEK 1,334.00 /PACKAGE
-                </span>
-              </span>
-            </a>
-          </li>
-        );
-      });
-
-      return searchResultsHTML;
-    }
-
-    setShowCommon(false);
-    setShowSearchResults(true);
-    setShowSearchResultsTop(false);
-    return "";
+    return setShowSearch(!showSearch);
   };
 
   const formActionLink = (text) => {
@@ -496,48 +398,50 @@ function App() {
     return setFormAction(link);
   };
 
-  const select = (element) => {
-    const selectData = element.textContent.toLowerCase();
-    formActionLink(selectData);
-    setShowInputLabel(false);
-    setShowSearch(false);
-    setShowResetButton(false);
-  };
-
   // Event listeners and event handlers
   const handleInputChange = (e) => {
-    setUserValue(e.target.value);
-    formActionLink(userValue);
-    setShowInputLabel(userValue);
-    setShowResetButton(userValue);
+    const typedValue = e.target.value;
+    const isSomethingTyped = typedValue.length > 0;
+    setUserValue(typedValue);
+    formActionLink(typedValue);
+    setShowInputLabel(isSomethingTyped);
+    setShowResetButton(isSomethingTyped);
+    setShowSearch(isSomethingTyped || selectedFilters.length > 0);
 
-    searchList(
-      userValue
-        ? exampleData.filter((data) =>
-            data.label.toLowerCase().includes(userValue.toLowerCase())
+    setSearchList(
+      isSomethingTyped
+        ? data.filter((filteredData) =>
+            filteredData.label.toLowerCase().includes(typedValue.toLowerCase())
           )
         : []
     );
+  };
 
-    showRecommendations();
-    showResults();
+  useEffect(() => {
+    setShowSearchListBox(!areResultsAvailable);
+    setShowEmpty(!areResultsAvailable);
+    setShowCommon(!areResultsAvailable);
+    setShowSearchResults(areResultsAvailable);
+    setShowSearchResultsTop(areResultsAvailable);
 
-    if (userValue.length > 0) {
-      setShowSearch(true);
+    return () => {
+      setShowSearchListBox(false);
+      setShowEmpty(true);
       setShowCommon(false);
-    } else {
-      setShowCommon(!showFilters);
-      setShowEmpty(false);
-    }
-  };
+      setShowSearchResults(false);
+      setShowSearchResultsTop(false);
+    };
+  }, [areResultsAvailable]);
 
-  const handleSearchItemClick = (e) => {
-    if (e.target.classList.contains("js-recommendation-item")) {
-      select(e.target);
-    }
-  };
+  useEffect(() => {
+    setCheckboxes(document.querySelectorAll("input[type=checkbox]"));
 
-  const handleSearchReset = (e) => {
+    return () => {
+      setCheckboxes([]);
+    };
+  }, []);
+
+  const onResetSearch = (e) => {
     e.preventDefault();
     setSearchList([]);
     setSelectedFilters([]);
@@ -549,52 +453,34 @@ function App() {
     setShowCommon(true);
     setShowSearch(false);
     setShowResetButton(false);
-    showRecommendations();
-    showResults();
     toggleShowSearch();
+    setAreResultsAvailable(false);
   };
 
   const handleFilterClear = () => {
     setSelectedFilters([]);
     setShowFilterClear(false);
     setShowFilterNoText(false);
-    // filtersCheckboxes.forEach((checkbox) => (checkbox.checked = false));
-    showResults();
   };
 
-  // const handleCheckboxChange = (checkbox) => {
-  //   selectedFilters = Array.from(filtersCheckboxes)
-  //       .filter((checkbox) => checkbox.checked)
-  //       .map((checkbox) => checkbox.value);
+  const handleCheckboxChange = () => {
+    const selected = Array.from(checkboxes)
+      .filter((checkbox) => checkbox.checked)
+      .map((checkbox) => checkbox.value);
 
-  //   showResults();
+    setSelectedFilters(selected);
 
-  //   if (selectedFilters.length === 0) {
-  //     filterClear.hidden = true;
-  //     return (filterNoText.hidden = true);
-  //   }
-
-  //   filterNo.textContent = selectedFilters.length;
-  //   filterClear.hidden = false;
-  //   filterNoText.hidden = false;
-
-  //   return;
-  // };
+    const isSomethingSelected = selected.length > 0;
+    setShowFilterClear(isSomethingSelected);
+    setShowFilterNoText(isSomethingSelected);
+    setFilterNo(selected.length);
+  };
 
   return (
     <main className="main">
       <div className="container">
-        <a
-          target="_blank"
-          className="logo"
-          href="https://home.tarkett.com/en_EU"
-        >
-          <img
-            width={182}
-            height={40}
-            src="./assets/svg/logo-blue.svg"
-            alt="Tarkett"
-          />
+        <a className="logo" href="https://home.tarkett.com/en_EU">
+          <img width={182} height={40} src={logo} alt="Tarkett" />
         </a>
         <form
           className={`search js-search-form ${showSearch && "search--active"}`}
@@ -630,7 +516,11 @@ function App() {
                 />
                 {showResetButton && (
                   <div className="search__input-affix">
-                    <button className="search__reset" type="reset" hidden="">
+                    <button
+                      className="search__reset"
+                      type="reset"
+                      onClick={onResetSearch}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor"
@@ -712,127 +602,132 @@ function App() {
                     </div>
                     <div className="search__filters-container">
                       <div className="search__filters-groups">
-                        {Object.entries(exampleFilters).map(([key, value]) => {
-                          return (
-                            <div className="search__filters-group">
-                              <h3 className="search__filters-group-title">
-                                {value.group}
-                              </h3>
-                              <ul className="search__filters-group-list">
-                                {Object.entries(value.items).map(
-                                  ([valueKey, valueName]) => {
-                                    return (
-                                      <li className="search__filters-group-list-item">
-                                        <label className="search__checkbox">
-                                          <input
-                                            type="checkbox"
-                                            name={key}
-                                            defaultValue={valueName.value}
-                                          />
-                                          {valueName.name}
-                                        </label>
-                                      </li>
-                                    );
-                                  }
-                                )}
-                              </ul>
-                            </div>
-                          );
-                        })}
+                        {Object.entries(exampleFilters).map(
+                          ([filtersKey, filtersValue]) => {
+                            return (
+                              <div
+                                className="search__filters-group"
+                                key={filtersKey}
+                              >
+                                <h3 className="search__filters-group-title">
+                                  {filtersValue.group}
+                                </h3>
+                                <ul className="search__filters-group-list">
+                                  {Object.entries(filtersValue.items).map(
+                                    ([valueKey, valueName]) => {
+                                      return (
+                                        <li
+                                          className="search__filters-group-list-item"
+                                          key={valueKey}
+                                        >
+                                          <label className="search__checkbox">
+                                            <input
+                                              type="checkbox"
+                                              name={filtersKey}
+                                              defaultValue={valueName.value}
+                                              onChange={handleCheckboxChange}
+                                            />
+                                            {valueName.name}
+                                          </label>
+                                        </li>
+                                      );
+                                    }
+                                  )}
+                                </ul>
+                              </div>
+                            );
+                          }
+                        )}
                       </div>
                     </div>
                   </div>
                   {/* Common Search */}
-                  <div className="search__common js-common">
-                    <h2 className="search__common-title">Common Searches</h2>
-                    <ul className="search__common-list">
-                      {exampleCommonSearch.map((common) => {
-                        const commonLinkTrim = common.label.trim();
-                        return (
-                          <li className="search__common-list-item">
-                            <a
-                              target="_blank"
-                              rel="noreferrer"
-                              className="search__common-list-link"
-                              href={`https://home.tarkett.com/en_EU/search/products?search[body]=${commonLinkTrim}&userQuery=${commonLinkTrim}`}
+                  {showCommon && (
+                    <div className="search__common js-common">
+                      <h2 className="search__common-title">Common Searches</h2>
+                      <ul className="search__common-list">
+                        {exampleCommonSearch.map((common) => {
+                          const commonLinkTrim = common.label.trim();
+                          return (
+                            <li
+                              className="search__common-list-item"
+                              key={commonLinkTrim}
                             >
-                              {common.label}
-                            </a>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                  {/* Recommendation search / Do you mean */}
-                  <div
-                    className="search__recommendation js-recommendation"
-                    hidden=""
-                  >
-                    <h2 className="search__recommendation-title">
-                      Do you mean
-                    </h2>
-                    <ul className="search__recommendation-list js-recommendation-list">
-                      {populateRecommendations()}
-                    </ul>
-                  </div>
-                  {/* Search results */}
-                  {showSearchResults && (
-                    <div className="search__results js-search-results">
-                      {showSearchResultsTop && (
-                        <div className="search__results-top">
-                          <h2 className="search__results-title">
-                            Top Product Results
-                          </h2>
-                          <a
-                            className="search__results-all js-results-all"
-                            href={searchAllHref}
-                          >
-                            <span className="search__results-all-text">
-                              Show All Products
-                            </span>
-                            <span className="search__results-all-icon">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                xmlSpace="preserve"
-                                viewBox="0 0 25 11.2"
+                              <a
+                                target="_blank"
+                                rel="noreferrer"
+                                className="search__common-list-link"
+                                href={`https://home.tarkett.com/en_EU/search/products?search[body]=${commonLinkTrim}&userQuery=${commonLinkTrim}`}
                               >
-                                <path
-                                  fill="currentColor"
-                                  d="M24.8 6.1c.3-.3.3-.8 0-1.1L20 .2c-.3-.3-.8-.3-1.1 0s-.3.8 0 1.1l4.3 4.3-4.3 4.3c-.3.3-.3.8 0 1.1s.8.3 1.1 0l4.8-4.9zM0 6.3h24.2V4.8H0v1.5z"
-                                />
-                              </svg>
-                            </span>
-                          </a>
-                        </div>
-                      )}
-                      {showEmpty && (
-                        <div className="search__results-empty js-search-empty">
-                          <span className="search__results-empty-icon">
+                                {common.label}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  )}
+                  {/* Recommendation search / Do you mean */}
+                  <Recommendations
+                    list={searchList}
+                    userValue={userValue}
+                    searchLink={searchLink}
+                  />
+                  {/* Search results */}
+                  <div className="search__results">
+                    {showSearchResultsTop && (
+                      <div className="search__results-top">
+                        <h2 className="search__results-title">
+                          Top Product Results
+                        </h2>
+                        <a className="search__results-all" href={searchAllHref}>
+                          <span className="search__results-all-text">
+                            Show All Products
+                          </span>
+                          <span className="search__results-all-icon">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               xmlSpace="preserve"
-                              viewBox="0 0 26.5 26.5"
+                              viewBox="0 0 25 11.2"
                             >
                               <path
                                 fill="currentColor"
-                                d="M12.6 25.3C5.7 25.3 0 19.6 0 12.6S5.7 0 12.6 0c7 0 12.6 5.7 12.6 12.6s-5.6 12.7-12.6 12.7zm0-23.8c-6.1 0-11.1 5-11.1 11.1s5 11.1 11.1 11.1 11.1-5 11.1-11.1-5-11.1-11.1-11.1zM25.8 26.5c-.2 0-.4-.1-.5-.2l-2.5-2.5c-.3-.3-.3-.8 0-1.1s.8-.3 1.1 0l2.5 2.5c.3.3.3.8 0 1.1-.2.2-.4.2-.6.2z"
+                                d="M24.8 6.1c.3-.3.3-.8 0-1.1L20 .2c-.3-.3-.8-.3-1.1 0s-.3.8 0 1.1l4.3 4.3-4.3 4.3c-.3.3-.3.8 0 1.1s.8.3 1.1 0l4.8-4.9zM0 6.3h24.2V4.8H0v1.5z"
                               />
                             </svg>
                           </span>
-                          <p className="search__results-empty-text">
-                            There are no results for searched criteria.
-                            <br />
-                            Adjust the filters and search term.
-                          </p>
-                        </div>
-                      )}
-                      {showSearchListBox && (
-                        <ul className="search__results-list js-search-list">
-                          {showResults}
-                        </ul>
-                      )}
-                    </div>
-                  )}
+                        </a>
+                      </div>
+                    )}
+                    {showEmpty && (
+                      <div className="search__results-empty">
+                        <span className="search__results-empty-icon">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlSpace="preserve"
+                            viewBox="0 0 26.5 26.5"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M12.6 25.3C5.7 25.3 0 19.6 0 12.6S5.7 0 12.6 0c7 0 12.6 5.7 12.6 12.6s-5.6 12.7-12.6 12.7zm0-23.8c-6.1 0-11.1 5-11.1 11.1s5 11.1 11.1 11.1 11.1-5 11.1-11.1-5-11.1-11.1-11.1zM25.8 26.5c-.2 0-.4-.1-.5-.2l-2.5-2.5c-.3-.3-.3-.8 0-1.1s.8-.3 1.1 0l2.5 2.5c.3.3.3.8 0 1.1-.2.2-.4.2-.6.2z"
+                            />
+                          </svg>
+                        </span>
+                        <p className="search__results-empty-text">
+                          There are no results for searched criteria.
+                          <br />
+                          Adjust the filters and search term.
+                        </p>
+                      </div>
+                    )}
+                    <SearchResults
+                      data={data}
+                      selectedFilters={selectedFilters}
+                      userValue={userValue}
+                      searchLink={searchLink}
+                      setAreResultsAvailable={setAreResultsAvailable}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -841,6 +736,6 @@ function App() {
       </div>
     </main>
   );
-}
+};
 
 export default App;
