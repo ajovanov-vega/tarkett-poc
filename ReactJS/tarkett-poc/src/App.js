@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import Recommendations from "./components/Recommendations";
 import SearchResults from "./components/SearchResults";
+import Filters from "./components/Filters";
 
 const exampleFilters = {
   thickness: {
@@ -358,13 +359,11 @@ const App = () => {
   const [showResetButton, setShowResetButton] = useState(false);
   const [showCommon, setShowCommon] = useState(true);
   const [areResultsAvailable, setAreResultsAvailable] = useState(false);
-  const [showSearchResults, setShowSearchResults] = useState(false);
   const [showSearchResultsTop, setShowSearchResultsTop] = useState(false);
   const [showEmpty, setShowEmpty] = useState(false);
   const [showFilterClear, setShowFilterClear] = useState(false);
   const [showFilterNoText, setShowFilterNoText] = useState(false);
   const [filterNo, setFilterNo] = useState(0);
-  const [showSearchListBox, setShowSearchListBox] = useState(false);
   const [formAction, setFormAction] = useState("");
   const [searchAllHref, setSearchAllHref] = useState("blank");
   const [searchList, setSearchList] = useState([]);
@@ -389,10 +388,7 @@ const App = () => {
   };
 
   const formActionLink = (text) => {
-    if (!text) {
-      setSearchAllHref("");
-      return setFormAction("");
-    }
+    if (!text) return;
     const link = searchLink(text);
     setSearchAllHref(link);
     return setFormAction(link);
@@ -416,30 +412,6 @@ const App = () => {
         : []
     );
   };
-
-  useEffect(() => {
-    setShowSearchListBox(!areResultsAvailable);
-    setShowEmpty(!areResultsAvailable);
-    setShowCommon(!areResultsAvailable);
-    setShowSearchResults(areResultsAvailable);
-    setShowSearchResultsTop(areResultsAvailable);
-
-    return () => {
-      setShowSearchListBox(false);
-      setShowEmpty(true);
-      setShowCommon(false);
-      setShowSearchResults(false);
-      setShowSearchResultsTop(false);
-    };
-  }, [areResultsAvailable]);
-
-  useEffect(() => {
-    setCheckboxes(document.querySelectorAll("input[type=checkbox]"));
-
-    return () => {
-      setCheckboxes([]);
-    };
-  }, []);
 
   const onResetSearch = (e) => {
     e.preventDefault();
@@ -475,6 +447,30 @@ const App = () => {
     setShowFilterNoText(isSomethingSelected);
     setFilterNo(selected.length);
   };
+
+  useEffect(() => {
+    setShowEmpty(!areResultsAvailable);
+    setShowCommon(!areResultsAvailable);
+    setShowSearchResultsTop(areResultsAvailable);
+
+    return () => {
+      setShowEmpty(true);
+      setShowCommon(false);
+      setShowSearchResultsTop(false);
+    };
+  }, [areResultsAvailable]);
+
+  useEffect(() => {
+    setCheckboxes(document.querySelectorAll("input[type=checkbox]"));
+
+    return () => {
+      setCheckboxes([]);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.title = "RFP Tarkett - Search component";
+  }, []);
 
   return (
     <main className="main">
@@ -601,44 +597,10 @@ const App = () => {
                       )}
                     </div>
                     <div className="search__filters-container">
-                      <div className="search__filters-groups">
-                        {Object.entries(exampleFilters).map(
-                          ([filtersKey, filtersValue]) => {
-                            return (
-                              <div
-                                className="search__filters-group"
-                                key={filtersKey}
-                              >
-                                <h3 className="search__filters-group-title">
-                                  {filtersValue.group}
-                                </h3>
-                                <ul className="search__filters-group-list">
-                                  {Object.entries(filtersValue.items).map(
-                                    ([valueKey, valueName]) => {
-                                      return (
-                                        <li
-                                          className="search__filters-group-list-item"
-                                          key={valueKey}
-                                        >
-                                          <label className="search__checkbox">
-                                            <input
-                                              type="checkbox"
-                                              name={filtersKey}
-                                              defaultValue={valueName.value}
-                                              onChange={handleCheckboxChange}
-                                            />
-                                            {valueName.name}
-                                          </label>
-                                        </li>
-                                      );
-                                    }
-                                  )}
-                                </ul>
-                              </div>
-                            );
-                          }
-                        )}
-                      </div>
+                      <Filters
+                        filters={exampleFilters}
+                        onCheckboxChange={handleCheckboxChange}
+                      />
                     </div>
                   </div>
                   {/* Common Search */}
