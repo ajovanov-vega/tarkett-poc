@@ -405,7 +405,6 @@ const App = () => {
     formActionLink(typedValue);
     setShowInputLabel(isSomethingTyped);
     setShowResetButton(isSomethingTyped);
-    setShowSearch(isSomethingTyped || selectedFilters.length > 0);
 
     setSearchList(
       isSomethingTyped
@@ -603,7 +602,12 @@ const App = () => {
   }, [results]);
 
   useEffect(() => {
-    setShowEmpty(!areResultsAvailable);
+    setShowEmpty(
+      (!areResultsAvailable && userValue.length > 0) ||
+        (!areResultsAvailable &&
+          userValue.length === 0 &&
+          selectedFilters.length > 0)
+    );
     setShowCommon(!areResultsAvailable);
     setShowSearchResultsTop(areResultsAvailable);
 
@@ -612,7 +616,7 @@ const App = () => {
       setShowCommon(false);
       setShowSearchResultsTop(false);
     };
-  }, [areResultsAvailable]);
+  }, [areResultsAvailable, selectedFilters.length, userValue.length]);
 
   useEffect(() => {
     setCheckboxes(document.querySelectorAll("input[type=checkbox]"));
