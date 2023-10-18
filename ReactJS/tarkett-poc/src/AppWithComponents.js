@@ -1,12 +1,9 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import Recommendations from "./components/Recommendations";
+import SearchResults from "./components/SearchResults";
+import Filters from "./components/Filters";
 
 const exampleFilters = {
   thickness: {
@@ -451,156 +448,9 @@ const App = () => {
     setFilterNo(selected.length);
   };
 
-  const filtersComponent = () => {
-    if (!exampleFilters) return null;
-
-    const filtersItems = (filtersKey, filtersValue) => {
-      return Object.entries(filtersValue.items).map(([valueKey, valueName]) => {
-        return (
-          <li className="search__filters-group-list-item" key={valueKey}>
-            <label className="search__checkbox">
-              <input
-                type="checkbox"
-                name={filtersKey}
-                defaultValue={valueName.value}
-                onChange={handleCheckboxChange}
-              />
-              {valueName.name}
-            </label>
-          </li>
-        );
-      });
-    };
-
-    return (
-      <div className="search__filters-groups">
-        {Object.entries(exampleFilters).map(([filtersKey, filtersValue]) => {
-          return (
-            <div className="search__filters-group" key={filtersKey}>
-              <h3 className="search__filters-group-title">
-                {filtersValue.group}
-              </h3>
-              <ul className="search__filters-group-list">
-                {filtersItems(filtersKey, filtersValue)}
-              </ul>
-            </div>
-          );
-        })}
-      </div>
-    );
+  const handleResultsUpdate = (value) => {
+    setAreResultsAvailable(value);
   };
-
-  const recommendationsList = () => {
-    if (searchList.length === 0 || !userValue) {
-      return null;
-    }
-    const recommendationsList = () => {
-      return searchList.map((searchData, index) => {
-        const regex = new RegExp("(" + userValue + ")", "gi");
-        const label = searchData.label;
-        const parts = label.split(regex);
-        const searchQuery = label.toLowerCase();
-        const webLink = searchLink(searchQuery);
-
-        return (
-          <li key={index} className="search__recommendation-list-item">
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href={webLink}
-              className="search__recommendation-list-link"
-            >
-              {parts.map((part, i) =>
-                i % 2 === 1 ? (
-                  <strong key={i}>{part}</strong>
-                ) : (
-                  <span key={i}>{part}</span>
-                )
-              )}
-            </a>
-          </li>
-        );
-      });
-    };
-
-    return (
-      <div className="search__recommendation">
-        <h2 className="search__recommendation-title">Do you mean</h2>
-        <ul className="search__recommendation-list">{recommendationsList()}</ul>
-      </div>
-    );
-  };
-
-  const filterResults = useCallback(() => {
-    if (selectedFilters.length > 0 || userValue.trim() !== "") {
-      return data.filter((filteredData) => {
-        return (
-          (!selectedFilters.length === 0 && userValue.trim() === "") ||
-          (selectedFilters.every((filter) =>
-            filteredData.filters.includes(filter)
-          ) &&
-            (!userValue.trim() ||
-              filteredData.label
-                .toLowerCase()
-                .includes(userValue.toLowerCase())))
-        );
-      });
-    }
-    return [];
-  }, [data, selectedFilters, userValue]);
-
-  const results = useMemo(() => filterResults(), [filterResults]);
-
-  const searchResultsBlock = (results) => {
-    if (!results.length) {
-      return null;
-    }
-
-    return (
-      <ul className="search__results-list">
-        {results.map((resultsData, index) => (
-          <li
-            className="search__results-list-item"
-            key={resultsData.id || index}
-          >
-            {/* Use a unique identifier as the key, if available */}
-            <a
-              className="search__results-list-link"
-              href={searchLink(resultsData.label.toLowerCase())}
-            >
-              <picture className="search__results-list-picture">
-                <source media="(min-width:1024px)" srcSet={resultsData.image} />
-                <img
-                  alt={`${resultsData.label}-${index + 1}`}
-                  className="search__results-list-image"
-                  src={resultsData.imageSmall}
-                />
-              </picture>
-              <span className="search__results-list-info">
-                <span className="search__results-list-item-title">
-                  {resultsData.label}
-                </span>
-                <span className="search__results-list-square-meter">
-                  SEK 529 /M²
-                </span>
-                <span className="search__results-list-square-package">
-                  SEK 1,334.00 /PACKAGE
-                </span>
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    );
-  };
-
-  useEffect(() => {
-    setAreResultsAvailable(results.length > 0);
-
-    return () => {
-      setAreResultsAvailable(false);
-    };
-  }, [results]);
 
   useEffect(() => {
     setShowEmpty(!areResultsAvailable);
@@ -750,7 +600,10 @@ const App = () => {
                       )}
                     </div>
                     <div className="search__filters-container">
-                      {filtersComponent()}
+                      <Filters
+                        filters={exampleFilters}
+                        onCheckboxChange={handleCheckboxChange}
+                      />
                     </div>
                   </div>
                   {/* Common Search */}
@@ -780,7 +633,11 @@ const App = () => {
                     </div>
                   )}
                   {/* Recommendation search / Do you mean */}
-                  {recommendationsList()}
+                  <Recommendations
+                    list={searchList}
+                    userValue={userValue}
+                    searchLink={searchLink}
+                  />
                   {/* Search results */}
                   <div className="search__results">
                     {showSearchResultsTop && (
@@ -828,7 +685,15 @@ const App = () => {
                         </p>
                       </div>
                     )}
-                    {data && searchResultsBlock(results)}
+                    {data && (
+                      <SearchResults
+                        data={data}
+                        selectedFilters={selectedFilters}
+                        userValue={userValue}
+                        searchLink={searchLink}
+                        onUpdateResults={handleResultsUpdate}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
