@@ -319,16 +319,8 @@ const exampleCommonSearch = [
 const inputRef = ref(null)
 const showFilters = ref(false)
 const showSearch = ref(false)
-const showInputLabel = ref(false)
-const showResetButton = ref(false)
-const showCommon = ref(true)
-const showSearchResultsTop = ref(false)
 const showEmpty = ref(false)
-const showFilterClear = ref(false)
-const showFilterNoText = ref(false)
-const filterNo = ref(0)
 const formAction = ref('')
-const searchAllHref = ref('blank')
 const searchList = ref([])
 const recommendations = ref([])
 const userValue = ref('')
@@ -347,17 +339,15 @@ const toggleShowFilters = () => {
 }
 
 const toggleShowSearch = () => {
-  if (searchList.value.length > 0 || checkboxes.value.length > 0) {
+  if (results.value.length > 0) {
     return (showSearch.value = true)
   }
   return (showSearch.value = !showSearch.value)
 }
 
 const formActionLink = (text) => {
-  if (!text) return
-  const link = searchLink(text)
-  searchAllHref.value = link
-  return (formAction.value = link)
+  if (!text) return (formAction.value = '')
+  return (formAction.value = searchLink(text))
 }
 
 // Event listeners and event handlers
@@ -366,8 +356,6 @@ const handleInputChange = (e) => {
   const isSomethingTyped = typedValue.length > 0
   userValue.value = typedValue
   formActionLink(typedValue)
-  showInputLabel.value = isSomethingTyped
-  showResetButton.value = isSomethingTyped
 
   searchList.value = isSomethingTyped
     ? data.filter((filteredData) =>
@@ -381,30 +369,17 @@ const onResetSearch = (e) => {
   searchList.value = []
   checkboxes.value = []
   userValue.value = ''
-  formActionLink()
   inputRef.value = ''
-  showInputLabel.value = false
-  formAction.value = ''
-  showCommon.value = true
   showSearch.value = false
-  showResetButton.value = false
-  toggleShowSearch()
+  formActionLink()
 }
 
 const handleFilterClear = () => {
   checkboxes.value = []
-  showFilterClear.value = false
-  showFilterNoText.value = false
-  filterResults()
+  return filterResults()
 }
 
-const handleCheckboxChange = () => {
-  const isSomethingSelected = checkboxes.value.length > 0
-  showFilterClear.value = isSomethingSelected
-  showFilterNoText.value = isSomethingSelected
-  filterNo.value = checkboxes.value.length
-  filterResults()
-}
+const handleCheckboxChange = () => filterResults()
 
 const recommendationsList = () => {
   recommendations.value = searchList.value.map((searchData, index) => {
@@ -444,8 +419,6 @@ watch(results, () => {
   showEmpty.value =
     (results.value.length === 0 && userValue.value.length > 0) ||
     (results.value.length === 0 && userValue.value.length === 0 && checkboxes.value.length > 0)
-  showCommon.value = results.value.length === 0
-  showSearchResultsTop.value = results.value.length > 0
 })
 </script>
 
@@ -458,7 +431,7 @@ watch(results, () => {
       <form
         class="search"
         :class="showSearch && 'search--active'"
-        target="_blank"
+        :target="formAction && '_blank'"
         method="POST"
         :action="formAction"
       >
@@ -488,7 +461,7 @@ watch(results, () => {
                 @input="(e) => handleInputChange(e)"
                 @click="toggleShowSearch"
               />
-              <div v-if="showResetButton" class="search__input-affix">
+              <div v-if="userValue.length > 0" class="search__input-affix">
                 <button class="search__reset" type="reset" @click="onResetSearch">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 14">
                     <path
@@ -498,7 +471,7 @@ watch(results, () => {
                   </svg>
                 </button>
               </div>
-              <label v-if="showInputLabel" class="search__input-label" for="search"
+              <label v-if="userValue.length > 0" class="search__input-label" for="search"
                 >Press Enter to Search</label
               >
             </div>
@@ -521,12 +494,12 @@ watch(results, () => {
                           />
                         </svg>
                       </span>
-                      <span v-if="showFilterNoText" class="search__filters-toggle-number">
-                        <strong>{{ filterNo }}</strong> filters applied
+                      <span v-if="checkboxes.length > 0" class="search__filters-toggle-number">
+                        <strong>{{ checkboxes.length }}</strong> filters applied
                       </span>
                     </button>
                     <button
-                      v-if="showFilterClear"
+                      v-if="checkboxes.length > 0"
                       class="search__filters-clear"
                       type="button"
                       @click="handleFilterClear"
@@ -577,7 +550,7 @@ watch(results, () => {
                   </div>
                 </div>
                 <!-- Common Search -->
-                <div v-if="showCommon" class="search__common">
+                <div v-if="results.length === 0" class="search__common">
                   <h2 class="search__common-title">Common Searches</h2>
                   <ul class="search__common-list">
                     <li
@@ -622,9 +595,9 @@ watch(results, () => {
                 </div>
                 <!-- Search results -->
                 <div class="search__results">
-                  <div v-if="showSearchResultsTop" class="search__results-top">
+                  <div v-if="results.length > 0" class="search__results-top">
                     <h2 class="search__results-title">Top Product Results</h2>
-                    <a class="search__results-all" :href="searchAllHref">
+                    <a class="search__results-all" :href="formAction">
                       <span class="search__results-all-text">Show All Products</span>
                       <span class="search__results-all-icon">
                         <svg
