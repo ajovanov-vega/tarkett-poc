@@ -595,7 +595,10 @@ watch(results, () => {
                   </ul>
                 </div>
                 <!-- Recommendation search / Do you mean -->
-                <div v-if="results.length > 0" class="search__recommendation">
+                <div
+                  v-if="results.length > 0 && userValue.length > 0"
+                  class="search__recommendation"
+                >
                   <h2 class="search__recommendation-title">Do you mean</h2>
                   <ul class="search__recommendation-list">
                     <li
