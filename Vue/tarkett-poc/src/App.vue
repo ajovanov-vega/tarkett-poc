@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 
+// Dummy data
 const exampleFilters = {
   thickness: {
     group: 'Thickness',
@@ -316,6 +317,7 @@ const exampleCommonSearch = [
   }
 ]
 
+// Logic
 const inputRef = ref(null)
 const showFilters = ref(false)
 const showSearch = ref(false)
@@ -328,8 +330,7 @@ const checkboxes = ref([])
 const results = ref([])
 const data = exampleData
 
-document.title = 'RFP Tarkett - Search component'
-
+// Dummy search link
 const searchLink = (searchTerm) => {
   return `https://home.tarkett.com/en_EU/search/products?search[body]=${searchTerm}&userQuery=${searchTerm}`
 }
@@ -350,39 +351,8 @@ const formActionLink = (text) => {
   return (formAction.value = searchLink(text))
 }
 
-// Event listeners and event handlers
-const handleInputChange = (e) => {
-  const typedValue = e.target.value
-  const isSomethingTyped = typedValue.length > 0
-  userValue.value = typedValue
-  formActionLink(typedValue)
-
-  searchList.value = isSomethingTyped
-    ? data.filter((filteredData) =>
-        filteredData.label.toLowerCase().includes(typedValue.toLowerCase())
-      )
-    : []
-}
-
-const onResetSearch = (e) => {
-  e.preventDefault()
-  searchList.value = []
-  checkboxes.value = []
-  userValue.value = ''
-  inputRef.value = ''
-  showSearch.value = false
-  formActionLink()
-}
-
-const handleFilterClear = () => {
-  checkboxes.value = []
-  return filterResults()
-}
-
-const handleCheckboxChange = () => filterResults()
-
 const recommendationsList = () => {
-  recommendations.value = searchList.value.map((searchData, index) => {
+  return (recommendations.value = searchList.value.map((searchData, index) => {
     const regex = new RegExp('(' + userValue.value + ')', 'gi')
     const label = searchData.label
     const parts = label.split(regex)
@@ -393,11 +363,11 @@ const recommendationsList = () => {
       parts,
       webLink
     }
-  })
+  }))
 }
 
 const filterResults = () => {
-  results.value =
+  return (results.value =
     checkboxes.value.length > 0 || userValue.value.trim() !== ''
       ? data.filter((filteredData) => {
           return (
@@ -407,9 +377,42 @@ const filterResults = () => {
                 filteredData.label.toLowerCase().includes(userValue.value.toLowerCase())))
           )
         })
-      : []
+      : [])
 }
 
+// Event listeners and event handlers
+const handleInputChange = (e) => {
+  const typedValue = e.target.value
+  const isSomethingTyped = typedValue.length > 0
+  userValue.value = typedValue
+  formActionLink(typedValue)
+
+  return (searchList.value = isSomethingTyped
+    ? data.filter((filteredData) =>
+        filteredData.label.toLowerCase().includes(typedValue.toLowerCase())
+      )
+    : [])
+}
+
+const onResetSearch = (e) => {
+  e.preventDefault()
+  searchList.value = []
+  checkboxes.value = []
+  userValue.value = ''
+  inputRef.value = ''
+  showSearch.value = false
+  formActionLink()
+  return
+}
+
+const handleFilterClear = () => {
+  checkboxes.value = []
+  return filterResults()
+}
+
+const handleCheckboxChange = () => filterResults()
+
+// Watchers
 watch(searchList, () => {
   filterResults()
   recommendationsList()
