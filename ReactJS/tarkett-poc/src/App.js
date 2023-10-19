@@ -627,10 +627,6 @@ export default function App() {
     };
   }, []);
 
-  useEffect(() => {
-    document.title = "RFP Tarkett - Search component";
-  }, []);
-
   return (
     <main className="main">
       <div className="container">
