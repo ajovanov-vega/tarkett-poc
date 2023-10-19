@@ -493,7 +493,7 @@ const App = () => {
     if (searchList.length === 0 || !userValue) {
       return null;
     }
-    const recommendationsList = () => {
+    const renderRecommendations = () => {
       return searchList.map((searchData, index) => {
         const regex = new RegExp("(" + userValue + ")", "gi");
         const label = searchData.label;
@@ -525,7 +525,9 @@ const App = () => {
     return (
       <div className="search__recommendation">
         <h2 className="search__recommendation-title">Do you mean</h2>
-        <ul className="search__recommendation-list">{recommendationsList()}</ul>
+        <ul className="search__recommendation-list">
+          {renderRecommendations()}
+        </ul>
       </div>
     );
   };
