@@ -352,7 +352,7 @@ const formActionLink = (text) => {
 }
 
 const recommendationsList = () => {
-  return (recommendations.value = searchList.value.map((searchData, index) => {
+  return (recommendations.value = searchList.value.map((searchData) => {
     const regex = new RegExp('(' + userValue.value + ')', 'gi')
     const label = searchData.label
     const parts = label.split(regex)
@@ -593,9 +593,9 @@ watch(results, () => {
                         :href="recommendation.webLink"
                         class="search__recommendation-list-link"
                       >
-                        <span v-for="(part, i) in recommendation.parts">
-                          <strong v-if="i % 2 === 1" :key="i">{{ part }}</strong>
-                          <span v-else :key="i * 100">{{ part }}</span>
+                        <span v-for="(part, i) in recommendation.parts" :key="i">
+                          <strong v-if="i % 2 === 1">{{ part }}</strong>
+                          <span v-else>{{ part }}</span>
                         </span>
                       </a>
                     </li>
